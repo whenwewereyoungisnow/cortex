@@ -15,7 +15,7 @@ Any Claude Code, Claude Desktop, or Cursor session can ask things like "what was
 **In (v1):**
 1. **Obsidian vault** *(new — your decision)*: the capture surface for decisions, learnings, and gotchas going forward. Seeded during Slice 4 with ~15 notes porting the known lessons (Railway variables, trailing-assistant-turn behavior, quantization terminology, fnm/Node setup, Warp history stores, …).
 2. **Repo docs** from your projects root (path set at Slice 0): every repo beneath it is auto-discovered — `README`s, `CLAUDE.md`s, briefs, `docs/` — markdown only, never source code. New repos join the corpus automatically.
-3. **Mac & tooling setup docs**: global CLAUDE.md, environment notes, model-suite rationale.
+3. **Mac & tooling setup docs** — concretely a single file for now: `~/.claude/CLAUDE.md` (an include for that file only; nothing else under `~/.claude/` ever enters the corpus, since it's full of machine-generated markdown). The rest of the setup knowledge — model-suite rationale, environment notes — arrives as vault Learnings notes via Slice 4's seeding.
 
 **Deferred:** curated claude.ai chat exports (noisy; revisit once the vault habit works).
 

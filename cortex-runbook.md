@@ -1,6 +1,6 @@
 # Cortex — Operator Runbook
 
-This is **your** document — what you type and say, in order. The brief explains *why*, CLAUDE.md tells *Claude Code* what to build; this file drives the sessions. One assumption throughout: your projects folder is `~/dev` — **if it lives elsewhere, substitute your path in every command below.**
+This is **your** document — what you type and say, in order. The brief explains *why*, CLAUDE.md tells *Claude Code* what to build; this file drives the sessions. One assumption throughout: your projects folder is `~/Developer` — **if it lives elsewhere, substitute your path in every command below.**
 
 ---
 
@@ -20,20 +20,20 @@ Expected output: **nothing**. If placeholder files appear, right-click the Hippo
 
 **Step 3 — Create the project folder and repo.** (Never inside iCloud.)
 ```bash
-mkdir -p ~/dev/cortex && cd ~/dev/cortex
+mkdir -p ~/Developer/cortex && cd ~/Developer/cortex
 git init -b main
 ```
 
 **Step 4 — Move the three docs in and commit.** Download `cortex-brief.md`, `CLAUDE.md`, and this runbook from our chat, then:
 ```bash
-mv ~/Downloads/cortex-brief.md ~/Downloads/CLAUDE.md ~/Downloads/cortex-runbook.md ~/dev/cortex/
+mv ~/Downloads/cortex-brief.md ~/Downloads/CLAUDE.md ~/Downloads/cortex-runbook.md ~/Developer/cortex/
 ls    # verify: CLAUDE.md is spelled exactly like that, uppercase
 git add -A && git commit -m "docs: brief, CLAUDE.md, runbook"
 ```
 
 **Step 5 — Start the first session.**
 ```bash
-cd ~/dev/cortex && claude
+cd ~/Developer/cortex && claude
 ```
 
 ---
@@ -42,7 +42,7 @@ cd ~/dev/cortex && claude
 
 **Step 6 — Paste this prompt:**
 
-> Read CLAUDE.md and cortex-brief.md in full. We're starting **Slice 0 (scaffold + doctor)**. Per the working agreements: restate the slice goal, list the files you intend to create, and flag anything ambiguous — then wait for my approval before writing anything. The projects root for config.toml is `~/dev`.
+> Read CLAUDE.md and cortex-brief.md in full. We're starting **Slice 0 (scaffold + doctor)**. Per the working agreements: restate the slice goal, list the files you intend to create, and flag anything ambiguous — then wait for my approval before writing anything. The projects root for config.toml is `~/Developer`.
 
 **Step 7 — Approve the plan, then review diffs.** Claude Code should show every file before saving. If it starts writing without showing a plan first, say: *"Stop — working agreements. Plan first, then diffs."*
 
@@ -99,7 +99,7 @@ Commit: `"slice 2: hybrid search"` → tick.
 > Read CLAUDE.md. We're starting **Slice 3 (MCP server)**. Plan first. Also produce docs/mcp-setup.md with exact registration steps for Claude Code, Claude Desktop, and Cursor.
 
 **Your gate — registration is your job, per client, following docs/mcp-setup.md:**
-1. Claude Code: `claude mcp add cortex -- uv run --directory ~/dev/cortex cortex-mcp`, then `claude mcp list`.
+1. Claude Code: `claude mcp add cortex -- uv run --directory ~/Developer/cortex cortex-mcp`, then `claude mcp list`.
 2. Claude Desktop: add the JSON block to `~/Library/Application Support/Claude/claude_desktop_config.json`, restart the app.
 3. Cursor: MCP settings, same command.
 
@@ -128,7 +128,7 @@ This one is mostly **your** work, spread over 2–3 days.
 15. Obsidian CLI = remote control for the running app, never a headless dependency
 
 **Step 4b — Session prompt:**
-> Read CLAUDE.md. We're starting **Slice 4 (real corpus)**. Configure the sources: vault at the Hippocampus path, projects root `~/dev`, setup docs at [path]. Plan first.
+> Read CLAUDE.md. We're starting **Slice 4 (real corpus)**. Configure the sources: vault at the Hippocampus path, projects root `~/Developer`, setup docs = the single file `~/.claude/CLAUDE.md`. Plan first.
 
 **Step 4c — Your gate:** `uv run cortex stats` shows vault + auto-discovered repos + setup docs, nothing unexpected. Grep-check that no Council data path appears in `config.toml`. Then **use it for a day or two** — ask real questions through Claude Code — and log ≥10 of them with hit/miss into `evals/golden_questions.yaml`. At least a few honest misses; zero misses means the questions are too easy.
 Commit: `"slice 4: real corpus + golden questions"` → tick.

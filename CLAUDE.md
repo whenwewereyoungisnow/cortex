@@ -18,7 +18,7 @@ Local MCP server giving Claude Code, Claude Desktop, and Cursor shared memory of
 
 ## 2. Stack
 
-Python 3.12+ (uv) · SQLite (WAL) · httpx for Ollama REST (`localhost:11434`) · `mcp` SDK for the server (stdio) · launchd for the refresh job. No web UI in this project. No cloud calls anywhere.
+Python 3.13 (uv-managed; `requires-python = ">=3.13"` — we never test on 3.12, so we don't claim it) · SQLite (WAL) · httpx for Ollama REST (`localhost:11434`) · `mcp` SDK for the server (stdio) · launchd for the refresh job. No web UI in this project. No cloud calls anywhere.
 
 ## 3. Approved dependencies
 
@@ -35,7 +35,7 @@ Python 3.12+ (uv) · SQLite (WAL) · httpx for Ollama REST (`localhost:11434`) �
 
 ```
 cortex/
-  pyproject.toml  config.toml  CLAUDE.md  cortex-brief.md  BASELINES.md
+  pyproject.toml  config.toml  CLAUDE.md  cortex-brief.md  cortex-runbook.md  BASELINES.md
   src/cortex/
     cli.py          # ingest, refresh, search, stats, check, doctor
     core/           # db.py, ingest.py, chunk.py, embed.py, retrieve.py
@@ -48,7 +48,7 @@ cortex/
 
 ## 5. Configuration
 
-`config.toml`: `embed_model = "qwen3-embedding:4b"` (D1), DB path, chunk params, and a `[[sources]]` list — v1 ships three entries: the vault (`~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Hippocampus`, D2), the projects root (D3 — repos auto-discovered beneath it), and setup docs. Each entry: `name`, `path`, `include` globs (default `**/*.md`), `exclude` globs (default `.obsidian/**`, `.git/**`, `node_modules/**`, `data/**`, `transcripts/**`, `**/*.icloud`). Ingestion touches **only** listed sources. No secrets exist in this project.
+`config.toml`: `embed_model = "qwen3-embedding:4b"` (D1), DB path, chunk params, and a `[[sources]]` list — v1 ships three entries: the vault (`~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Hippocampus`, D2), the projects root (D3 — repos auto-discovered beneath it), and setup docs (a single-file include: `~/.claude/CLAUDE.md` only — nothing else under `~/.claude/`). Each entry: `name`, `path`, `include` globs (default `**/*.md`), `exclude` globs (default `.obsidian/**`, `.git/**`, `node_modules/**`, `data/**`, `transcripts/**`, `**/*.icloud`). Ingestion touches **only** listed sources. No secrets exist in this project.
 
 ---
 
