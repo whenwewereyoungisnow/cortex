@@ -9,13 +9,13 @@ from typing import Any
 
 import httpx
 
-from cortex.core import db
+from cortex.core import db, ingest
 
 CONFIG_NAME = "config.toml"
 REQUIRED_KEYS = ("embed_model", "ollama_url", "db_path", "sources")
 
 # Commands that exist as stubs until their slice lands.
-ARRIVES_IN_SLICE = {"ingest": 1, "refresh": 1, "stats": 1, "search": 2, "check": 5}
+ARRIVES_IN_SLICE = {"search": 2, "check": 5}
 
 
 class ConfigError(Exception):
@@ -109,6 +109,52 @@ def cmd_doctor(args: argparse.Namespace) -> int:
     return 1 if failures else 0
 
 
+def cmd_sync(args: argparse.Namespace) -> int:
+    """Shared by `ingest` and `refresh`: both walk every source and act only
+    on new/changed/deleted files (refresh grows extra duties in Slice 2)."""
+    cfg = _load_config_or_report()
+    if cfg is None:
+        return 1
+    conn = db.connect(cfg["db_path"])
+    try:
+        results = ingest.sync(conn, cfg)
+    finally:
+        conn.close()
+    missing = False
+    for name, s in results.items():
+        line = f"  {name}: {s.added} added, {s.changed} changed, {s.deleted} deleted, {s.skipped} skipped"
+        if s.missing:
+            line += " — SOURCE PATH MISSING"
+            missing = True
+        print(line)
+    return 1 if missing else 0
+
+
+def cmd_stats(args: argparse.Namespace) -> int:
+    cfg = _load_config_or_report()
+    if cfg is None:
+        return 1
+    conn = db.connect(cfg["db_path"])
+    try:
+        rows = ingest.corpus_stats(conn)
+    finally:
+        conn.close()
+    if not rows:
+        print("index is empty — run: cortex ingest")
+        return 0
+    for source, docs, chunks in rows:
+        print(f"  {source}: {docs} docs, {chunks} chunks")
+    return 0
+
+
+def _load_config_or_report() -> dict[str, Any] | None:
+    try:
+        return load_config(Path(CONFIG_NAME))
+    except ConfigError as e:
+        print(f"error: {e}", file=sys.stderr)
+        return None
+
+
 def cmd_stub(args: argparse.Namespace) -> int:
     print(
         f"cortex {args.command} is not built yet — arrives in Slice {ARRIVES_IN_SLICE[args.command]}",
@@ -133,11 +179,17 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+COMMANDS = {
+    "doctor": cmd_doctor,
+    "ingest": cmd_sync,
+    "refresh": cmd_sync,
+    "stats": cmd_stats,
+}
+
+
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    if args.command == "doctor":
-        return cmd_doctor(args)
-    return cmd_stub(args)
+    return COMMANDS.get(args.command, cmd_stub)(args)
 
 
 if __name__ == "__main__":

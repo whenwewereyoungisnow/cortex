@@ -2,7 +2,7 @@
 
 Local MCP server giving Claude Code, Claude Desktop, and Cursor shared memory of Fabian's projects, decisions, and machine setup. Sources: an Obsidian vault + allowlisted repo docs + setup docs. Fully local, read-only, files-on-disk canonical. Full context: `cortex-brief.md`.
 
-**Current slice:** 1 (not started). Update §6 as slices complete.
+**Current slice:** 2 (not started). Update §6 as slices complete.
 
 ---
 
@@ -48,7 +48,7 @@ cortex/
 
 ## 5. Configuration
 
-`config.toml`: `embed_model = "qwen3-embedding:4b"` (D1), DB path, chunk params, and a `[[sources]]` list — v1 ships three entries: the vault (`~/Library/Mobile Documents/com~apple~CloudDocs/Documents/Technologie/Aktuell/Notes/Hippocampus`, D2 as revised 2026-07-13), the projects root (D3 — repos auto-discovered beneath it), and setup docs (a single-file include: `~/.claude/CLAUDE.md` only — nothing else under `~/.claude/`). Each entry: `name`, `path`, `include` globs (default `**/*.md`), `exclude` globs (default `.obsidian/**`, `.git/**`, `node_modules/**`, `data/**`, `transcripts/**`, `**/*.icloud`). Ingestion touches **only** listed sources. No secrets exist in this project.
+`config.toml`: `embed_model = "qwen3-embedding:4b"` (D1), DB path, chunk params, and a `[[sources]]` list — v1 ships three entries: the vault (`~/Library/Mobile Documents/com~apple~CloudDocs/Documents/Technologie/Aktuell/Notes/Hippocampus`, D2 as revised 2026-07-13), the projects root (D3 — repos auto-discovered beneath it), and setup docs (a single-file include: `~/.claude/CLAUDE.md` only — nothing else under `~/.claude/`). Each entry: `name`, `path`, `include` globs (default `**/*.md`), `exclude` globs (default `.*/**` — any hidden dir: `.obsidian`, `.git`, `.venv`, `.pytest_cache`, … — plus `node_modules/**`, `venv/**`, `data/**`, `transcripts/**`, `tests/fixtures/**`, `**/*.icloud`; revised during Slice 1 after real ingest pulled in site-packages licenses, pytest caches, and test fixtures). Patterns are gitignore-style: no leading `/` ⇒ match at any depth. Ingestion touches **only** listed sources. No secrets exist in this project.
 
 ---
 
@@ -57,7 +57,7 @@ cortex/
 | # | Slice | Status |
 |---|---|---|
 | 0 | Scaffold + doctor | ✅ 2026-07-13 |
-| 1 | Store + markdown ingestion | ☐ |
+| 1 | Store + markdown ingestion | ✅ 2026-07-13 |
 | 2 | Embeddings + hybrid search | ☐ |
 | 3 | MCP server in three clients | ☐ |
 | 4 | Real corpus + vault seeding + golden questions | ☐ |

@@ -18,13 +18,13 @@ overlap_chars = 150
 name = "vault"
 path = "~/Library/Mobile Documents/com~apple~CloudDocs/Documents/Technologie/Aktuell/Notes/Hippocampus"
 include = ["**/*.md"]
-exclude = [".obsidian/**", ".trash/**", ".git/**", "node_modules/**", "data/**", "transcripts/**", "**/*.icloud"]
+exclude = [".*/**", "node_modules/**", "venv/**", "data/**", "transcripts/**", "tests/fixtures/**", "**/*.icloud"]
 
 [[sources]]
 name = "projects"
 path = "~/Developer"
 include = ["**/*.md"]
-exclude = [".obsidian/**", ".git/**", "node_modules/**", "data/**", "transcripts/**", "**/*.icloud"]
+exclude = [".*/**", "node_modules/**", "venv/**", "data/**", "transcripts/**", "tests/fixtures/**", "**/*.icloud"]
 
 [[sources]]
 name = "setup-docs"
