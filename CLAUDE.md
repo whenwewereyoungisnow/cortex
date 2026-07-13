@@ -2,7 +2,7 @@
 
 Local MCP server giving Claude Code, Claude Desktop, and Cursor shared memory of Fabian's projects, decisions, and machine setup. Sources: an Obsidian vault + allowlisted repo docs + setup docs. Fully local, read-only, files-on-disk canonical. Full context: `cortex-brief.md`.
 
-**Current slice:** 0 (not started). Update §6 as slices complete.
+**Current slice:** 1 (not started). Update §6 as slices complete.
 
 ---
 
@@ -56,7 +56,7 @@ cortex/
 
 | # | Slice | Status |
 |---|---|---|
-| 0 | Scaffold + doctor | ☐ |
+| 0 | Scaffold + doctor | ✅ 2026-07-13 |
 | 1 | Store + markdown ingestion | ☐ |
 | 2 | Embeddings + hybrid search | ☐ |
 | 3 | MCP server in three clients | ☐ |
