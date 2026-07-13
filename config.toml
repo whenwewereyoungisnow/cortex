@@ -1,0 +1,32 @@
+# Cortex configuration.
+# Paths may use ~. Relative paths (db_path) resolve against this file's directory.
+# Model tags come from `ollama list` — update here, never hardcode in code.
+
+embed_model = "qwen3-embedding:4b"
+ollama_url = "http://localhost:11434"
+db_path = "data/cortex.db"
+
+[chunking]
+target_chars = 1000
+overlap_chars = 150
+
+# Ingestion touches ONLY the sources listed below — allowlist-only is the
+# privacy mechanism. A source whose path is a single file ingests exactly that
+# file; include/exclude globs apply to directory sources.
+
+[[sources]]
+name = "vault"
+path = "~/Library/Mobile Documents/com~apple~CloudDocs/Documents/Technologie/Aktuell/Notes/Hippocampus"
+include = ["**/*.md"]
+exclude = [".obsidian/**", ".trash/**", ".git/**", "node_modules/**", "data/**", "transcripts/**", "**/*.icloud"]
+
+[[sources]]
+name = "projects"
+path = "~/Developer"
+include = ["**/*.md"]
+exclude = [".obsidian/**", ".git/**", "node_modules/**", "data/**", "transcripts/**", "**/*.icloud"]
+
+[[sources]]
+name = "setup-docs"
+# Single-file include: nothing else under ~/.claude/ ever enters the corpus.
+path = "~/.claude/CLAUDE.md"

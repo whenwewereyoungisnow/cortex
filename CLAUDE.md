@@ -48,7 +48,7 @@ cortex/
 
 ## 5. Configuration
 
-`config.toml`: `embed_model = "qwen3-embedding:4b"` (D1), DB path, chunk params, and a `[[sources]]` list — v1 ships three entries: the vault (`~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Hippocampus`, D2), the projects root (D3 — repos auto-discovered beneath it), and setup docs (a single-file include: `~/.claude/CLAUDE.md` only — nothing else under `~/.claude/`). Each entry: `name`, `path`, `include` globs (default `**/*.md`), `exclude` globs (default `.obsidian/**`, `.git/**`, `node_modules/**`, `data/**`, `transcripts/**`, `**/*.icloud`). Ingestion touches **only** listed sources. No secrets exist in this project.
+`config.toml`: `embed_model = "qwen3-embedding:4b"` (D1), DB path, chunk params, and a `[[sources]]` list — v1 ships three entries: the vault (`~/Library/Mobile Documents/com~apple~CloudDocs/Documents/Technologie/Aktuell/Notes/Hippocampus`, D2 as revised 2026-07-13), the projects root (D3 — repos auto-discovered beneath it), and setup docs (a single-file include: `~/.claude/CLAUDE.md` only — nothing else under `~/.claude/`). Each entry: `name`, `path`, `include` globs (default `**/*.md`), `exclude` globs (default `.obsidian/**`, `.git/**`, `node_modules/**`, `data/**`, `transcripts/**`, `**/*.icloud`). Ingestion touches **only** listed sources. No secrets exist in this project.
 
 ---
 

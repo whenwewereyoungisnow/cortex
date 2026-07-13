@@ -1,0 +1,12 @@
+# Derived index — disposable, rebuild with `cortex ingest`
+data/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# macOS
+.DS_Store
