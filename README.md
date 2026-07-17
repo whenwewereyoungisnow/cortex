@@ -39,8 +39,8 @@ starts.
 | # | Slice | Status |
 |---|---|---|
 | 0 | Scaffold + doctor — CLI skeleton, environment health check | ✅ 2026-07-13 |
-| 1 | Store + markdown ingestion — idempotent SQLite ingest, Obsidian-aware chunking | up next |
-| 2 | Embeddings + hybrid search — FTS5 + vectors, rank fusion, graceful degradation | planned |
+| 1 | Store + markdown ingestion — idempotent SQLite ingest, Obsidian-aware chunking | ✅ 2026-07-13 |
+| 2 | Embeddings + hybrid search — FTS5 + vectors, rank fusion, graceful degradation | in progress |
 | 3 | MCP server in three clients — stdio server, registration docs | planned |
 | 4 | Real corpus — vault seeding (~15 notes), golden questions | planned |
 | 5 | Check command + daily launchd refresh — **v1 exit** | planned |
