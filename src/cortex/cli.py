@@ -9,13 +9,13 @@ from typing import Any
 
 import httpx
 
-from cortex.core import db, ingest
+from cortex.core import db, embed, ingest, retrieve
 
 CONFIG_NAME = "config.toml"
 REQUIRED_KEYS = ("embed_model", "ollama_url", "db_path", "sources")
 
 # Commands that exist as stubs until their slice lands.
-ARRIVES_IN_SLICE = {"search": 2, "check": 5}
+ARRIVES_IN_SLICE = {"check": 5}
 
 
 class ConfigError(Exception):
@@ -118,6 +118,7 @@ def cmd_sync(args: argparse.Namespace) -> int:
     conn = db.connect(cfg["db_path"])
     try:
         results = ingest.sync(conn, cfg)
+        embedded, remaining = embed.embed_backlog(conn, cfg)
     finally:
         conn.close()
     missing = False
@@ -127,6 +128,13 @@ def cmd_sync(args: argparse.Namespace) -> int:
             line += " — SOURCE PATH MISSING"
             missing = True
         print(line)
+    if embedded:
+        print(f"  embedded {embedded} chunks")
+    if remaining:
+        print(
+            f"  ⚠ {remaining} chunks not embedded (Ollama unreachable?)"
+            " — next refresh catches up; search is keyword-only for them"
+        )
     return 1 if missing else 0
 
 
@@ -137,6 +145,7 @@ def cmd_stats(args: argparse.Namespace) -> int:
     conn = db.connect(cfg["db_path"])
     try:
         rows = ingest.corpus_stats(conn)
+        backlog = embed.backlog_count(conn)
     finally:
         conn.close()
     if not rows:
@@ -144,6 +153,35 @@ def cmd_stats(args: argparse.Namespace) -> int:
         return 0
     for source, docs, chunks in rows:
         print(f"  {source}: {docs} docs, {chunks} chunks")
+    if backlog:
+        print(f"  ⚠ {backlog} chunks awaiting embedding — run: cortex refresh")
+    return 0
+
+
+def cmd_search(args: argparse.Namespace) -> int:
+    cfg = _load_config_or_report()
+    if cfg is None:
+        return 1
+    conn = db.connect(cfg["db_path"])
+    try:
+        hits, semantic_ok = retrieve.search(conn, cfg, args.query, top_k=args.top_k)
+    finally:
+        conn.close()
+    if not semantic_ok:
+        print(
+            "⚠ semantic search unavailable (Ollama down or nothing embedded yet)"
+            " — keyword-only results",
+            file=sys.stderr,
+        )
+    if not hits:
+        print("no results")
+        return 0
+    for i, hit in enumerate(hits, 1):
+        snippet = " ".join(hit.text.split())
+        if len(snippet) > 200:
+            snippet = snippet[:200] + "…"
+        print(f"  {i}. [{hit.source}] {hit.path} · {hit.score:.4f} ({'+'.join(hit.matched)})")
+        print(f"     {snippet}")
     return 0
 
 
@@ -173,6 +211,7 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("refresh", help="re-walk sources; act only on new/changed/deleted files")
     p_search = sub.add_parser("search", help="hybrid keyword+semantic search over the corpus")
     p_search.add_argument("query", help="search query")
+    p_search.add_argument("-k", "--top-k", type=int, default=5, help="number of results (default 5)")
     sub.add_parser("stats", help="print docs/chunks per source")
     sub.add_parser("check", help="score retrieval against the golden questions")
     sub.add_parser("doctor", help="verify environment: config, Ollama, sources, database")
@@ -183,13 +222,20 @@ COMMANDS = {
     "doctor": cmd_doctor,
     "ingest": cmd_sync,
     "refresh": cmd_sync,
+    "search": cmd_search,
     "stats": cmd_stats,
 }
 
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    return COMMANDS.get(args.command, cmd_stub)(args)
+    try:
+        return COMMANDS.get(args.command, cmd_stub)(args)
+    except RuntimeError as e:
+        # Deliberate loud failures (pre-Slice-2 DB, embed-model mismatch):
+        # show the remedy, not a traceback.
+        print(f"error: {e}", file=sys.stderr)
+        return 1
 
 
 if __name__ == "__main__":

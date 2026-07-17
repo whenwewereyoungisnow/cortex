@@ -2,7 +2,7 @@
 
 Local MCP server giving Claude Code, Claude Desktop, and Cursor shared memory of Fabian's projects, decisions, and machine setup. Sources: an Obsidian vault + allowlisted repo docs + setup docs. Fully local, read-only, files-on-disk canonical. Full context: `cortex-brief.md`.
 
-**Current slice:** 2 (not started). Update §6 as slices complete.
+**Current slice:** 2 (in progress). Update §6 as slices complete.
 
 ---
 
@@ -135,7 +135,7 @@ cortex/
 
 **Goal:** `cortex check` scores retrieval against the golden questions; a launchd job refreshes the index daily; baseline recorded.
 **Why now:** Two silent failure modes remain: retrieval quality drifting unmeasured, and a stale index quietly rotting trust ("it didn't know about yesterday's note" ends the asking habit). This slice closes both, cheaply — this is the 30-line residue of the parked eval harness, not its return.
-**Build notes:** `check` runs each golden question through `core/retrieve.py`, prints hit@3/hit@5, appends a dated line to `BASELINES.md` with config hash. launchd user LaunchAgent runs `uv run cortex refresh` daily; logs to a rotating file; nonzero exit on failure — no silent half-runs. `doctor` gains a staleness line (last successful refresh timestamp).
+**Build notes:** `check` runs each golden question through `core/retrieve.py`, prints hit@3/hit@5, appends a dated line to `BASELINES.md` with config hash. launchd user LaunchAgent runs `uv run cortex refresh` daily; logs to a rotating file; nonzero exit on failure — no silent half-runs. `doctor` gains a staleness line (last successful refresh timestamp). Named candidate for the one demo experiment: the Qwen3 query-side instruction prefix in `core/retrieve.py` (deferred from Slice 2, A2) — query-side only, so testing it is a one-line change plus a `cortex check` run, no re-embedding; record before/after in `BASELINES.md`.
 **Files touched:** `cli.py`, `evals/golden_questions.yaml`, `BASELINES.md`, `launchd/…refresh.plist`, `docs/operations.md`.
 **Out of scope:** parameter tuning beyond one optional demo experiment, notifications.
 **Gate (Fabian runs) — v1 exit review:**
